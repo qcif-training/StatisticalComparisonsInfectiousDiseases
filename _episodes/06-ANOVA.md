@@ -294,22 +294,22 @@ that we will use here.
 
 ### Two-way ANOVA example
 The dataset we will use here is a small study to investigate the influence of
-Prozac on the reported 'happiness score' of patients, and whether males and
+a vaccine on the measured antibody level of patients, and whether males and
 female patients respond differently.
-* Happiness score recorded for 24 patients
-* Patients randomised to either placebo or Prozac **treatment** (first factor)
+* Antibody level recorded for 24 patients
+* Patients randomised to either placebo or vaccine **treatment** (first factor)
 * Patients **gender** recorded (second factor)
 
-Read the data in from the file "happiness.csv"
+Read the data in from the file "vaccine.csv"
 
 ```r
 # As before, we need to specify the stringsAsfactors flag for read.csv
-happiness <- read.csv("data/happiness.csv", stringsAsFactors = TRUE)
-head(happiness)
+vaccine <- read.csv("data/vaccine.csv", stringsAsFactors = TRUE)
+head(vaccine)
 ```
 
 ~~~
-##   Patient Score Gender Treatment
+##   Patient Ab_level Gender Treatment
 ## 1       1     3   Male   Placebo
 ## 2       2     4   Male   Placebo
 ## 3       3     2   Male   Placebo
@@ -320,26 +320,26 @@ head(happiness)
 {: .output}
 
 ```r
-str(happiness)
+str(vaccine)
 ```
 
 ~~~
 ## 'data.frame':	24 obs. of  4 variables:
 ##  $ Patient  : int  1 2 3 4 5 6 7 8 9 10 ...
-##  $ Score    : num  3 4 2 3 4 3 4 5 4 6 ...
+##  $ Ab_level    : num  3 4 2 3 4 3 4 5 4 6 ...
 ##  $ Gender   : Factor w/ 2 levels "Female","Male": 2 2 2 2 2 2 1 1 1 1 ...
-##  $ Treatment: Factor w/ 2 levels "Placebo","Prozac": 1 1 1 1 1 1 1 1 1 1 ...
+##  $ Treatment: Factor w/ 2 levels "Placebo","Vaccine": 1 1 1 1 1 1 1 1 1 1 ...
 ~~~
 {: .output}
 
 ```r
-summary(happiness)
+summary(vaccine)
 ```
 
 ~~~
-##     Patient          Score          Gender     Treatment
+##     Patient          Ab_level          Gender     Treatment
 ##  Min.   : 1.00   Min.   :2.000   Female:12   Placebo:12
-##  1st Qu.: 6.75   1st Qu.:4.000   Male  :12   Prozac :12
+##  1st Qu.: 6.75   1st Qu.:4.000   Male  :12   Vaccine :12
 ##  Median :12.50   Median :5.000
 ##  Mean   :12.50   Mean   :4.854
 ##  3rd Qu.:18.25   3rd Qu.:6.000
@@ -348,12 +348,12 @@ summary(happiness)
 {: .output}
 
 ```r
-table(happiness$Gender, happiness$Treatment)
+table(vaccine$Gender, vaccine$Treatment)
 ```
 
 ~~~
 ##
-##          Placebo Prozac
+##          Placebo Vaccine
 ##   Female       6      6
 ##   Male         6      6
 ~~~
@@ -368,7 +368,7 @@ As usual, an early step in studying our data is to visualise it
 ```r
 # First, plot just using each of the factors independently
 par(mfrow=c(1,2))
-plot(Score ~ Treatment + Gender, data = happiness)
+plot(Ab_level ~ Treatment + Gender, data = vaccine)
 par(mfrow=c(1,1))
 ```
 
@@ -377,28 +377,28 @@ par(mfrow=c(1,1))
 
 ```r
 # Then using ggplot to separate out the four different combinations of factor
-ggplot(data = happiness, aes(x = Treatment, y = Score, fill = Gender)) +
+ggplot(data = vaccine, aes(x = Treatment, y = Score, fill = Gender)) +
   geom_boxplot(position = position_dodge())
 ```
 
 ![RStudio layout](../fig/06-fig6.png)
 
-Judging by the boxplots, there appears to be a difference in happiness score for
-the different treatment drugs (score higher with treatment than placebo).
+Judging by the boxplots, there appears to be a difference in antibody level for
+the different treatments (level is higher with vaccine than placebo).
 However, the difference is less pronounced between the gender groups.
 
 Two-way ANOVA tests for two things:
 **Main effects** - each factor independently
-* Are patients happier on placebo or Prozac
-* Do males and females differ in happiness score
+* Do patients have a higher antibody level after treatment with placebo or vaccine
+* Do males and females differ in antibody level
 
 **Interaction effects** - the effects of one factor are different depending on
 the level (category) of the other factor
-* Treatment x Gender: Males may be happier on Prozac than placebo, but females
-may not have a different response between the two. Or _vice versa_. The diagram
-below shows examples of (left) where both main effects have a difference but
-there is no interaction and (right) where there is a strong interaction but
-little main effect.
+* Treatment x Gender: Males may have a higher antibody level after vaccination than
+with placebo, but females may not have a different response between the two. Or 
+_vice versa_. The diagram below shows examples of (left) where both main effects 
+have a difference but there is no interaction and (right) where there is a strong 
+interaction but little main effect.
 
 ![RStudio layout](../fig/06-fig7.png)
 
@@ -407,19 +407,19 @@ the order of factors - switching these alters which variable is plotted on the
 x-axis.
 
 ```r
-interaction.plot(happiness$Treatment, happiness$Gender, happiness$Score,
+interaction.plot(vaccine$Treatment, vaccine$Gender, vaccine$Ab_level,
                  col=2:3, lwd=3)
 ```
 
 ![RStudio layout](../fig/06-fig8.png)
 
 The interaction plot seems to show that there is a strong interaction effect
-between Treatment and Gender on happiness score, but to confirm that we can fit
+between Treatment and Gender on antibody levels, but to confirm that we can fit
 a two-way ANOVA with an interaction term.
 
 ```r
 # Option 1 - the most commonly used
-result <- aov(Score~Treatment+Gender+Treatment*Gender, data=happiness)
+result <- aov(Ab_level~Treatment+Gender+Treatment*Gender, data=vaccine)
 summary(result)
 ```
 
@@ -436,14 +436,14 @@ summary(result)
 
 ```r
 # Option 2 - gives identical results under most circumstances
-result_2 <- lm(Score~Treatment+Gender+Treatment*Gender, data=happiness)
+result_2 <- lm(Ab_level~Treatment+Gender+Treatment*Gender, data=vaccine)
 anova(result_2)
 ```
 
 ~~~
 ## Analysis of Variance Table
 ##
-## Response: Score
+## Response: Ab_level
 ##                  Df  Sum Sq Mean Sq F value    Pr(>F)
 ## Treatment         1 15.8437 15.8437 24.9344 6.977e-05 ***
 ## Gender            1  0.8437  0.8437  1.3279 0.2627729
@@ -458,25 +458,25 @@ anova(result_2)
 #### Treatment
 The final column Pr(>F) is the p-value; at 7x10<sup>-5</sup> this
 is well within the cutoff for statistical significance. Therefore we conclude
-that treatment with Prozac has a significant effect on happiness. From our plots
-it appears that Prozac is associated with higher happiness scores, but this
-should be confirmed with _post hoc_ testing.
+that treatment with vaccine has a significant effect on antibody levels. From 
+our plots it appears that vaccination is associated with higher antibody levels,
+but this should be confirmed with _post hoc_ testing.
 
 #### Gender
 The p-value for gender is not signficant, so there is not evidence for
-a gender effect on happiness; that is, there is no difference in happiness
+a gender effect on antibody levels; that is, there is no difference in antibody
 levels between males and females.
 
 #### Treatment:Gender
 This has a significant p-value, indicating that there is an
 interaction between gender and treatment. The plots suggest that is because
-Prozac increases happiness in men more than in women, but again this should be
-confirmed with _post hoc_ testing.
+vaccination increases antibody levels in men more than in women, but again this 
+should be confirmed with _post hoc_ testing.
 
 
 ```r
 # For ANOVA performed with `aov()`, used TukeyHSD for post hoc testing
-result <- aov(Score~Treatment+Gender+Treatment*Gender, data=happiness)
+result <- aov(Ab_level~Treatment+Gender+Treatment*Gender, data=vaccine)
 TukeyHSD(result)
 ```
 
@@ -484,11 +484,11 @@ TukeyHSD(result)
 ##   Tukey multiple comparisons of means
 ##     95% family-wise confidence level
 ##
-## Fit: aov(formula = Score ~ Treatment + Gender + Treatment * Gender, data = happiness)
+## Fit: aov(formula = Ab_level ~ Treatment + Gender + Treatment * Gender, data = vaccine)
 ##
 ## $Treatment
 ##                 diff       lwr      upr    p adj
-## Prozac-Placebo 1.625 0.9461711 2.303829 6.98e-05
+## Vaccine-Placebo 1.625 0.9461711 2.303829 6.98e-05
 ##
 ## $Gender
 ##               diff       lwr       upr     p adj
@@ -496,20 +496,20 @@ TukeyHSD(result)
 ##
 ## $`Treatment:Gender`
 ##                               diff         lwr        upr     p adj
-## Prozac:Female-Placebo:Female  0.25 -1.03813584  1.5381358 0.9472984
+## Vaccine:Female-Placebo:Female  0.25 -1.03813584  1.5381358 0.9472984
 ## Placebo:Male-Placebo:Female  -1.75 -3.03813584 -0.4618642 0.0056547
-## Prozac:Male-Placebo:Female    1.25 -0.03813584  2.5381358 0.0591502
-## Placebo:Male-Prozac:Female   -2.00 -3.28813584 -0.7118642 0.0016445
-## Prozac:Male-Prozac:Female     1.00 -0.28813584  2.2881358 0.1650724
-## Prozac:Male-Placebo:Male      3.00  1.71186416  4.2881358 0.0000132
+## Vaccine:Male-Placebo:Female    1.25 -0.03813584  2.5381358 0.0591502
+## Placebo:Male-Vaccine:Female   -2.00 -3.28813584 -0.7118642 0.0016445
+## Vaccine:Male-Vaccine:Female     1.00 -0.28813584  2.2881358 0.1650724
+## Vaccine:Male-Placebo:Male      3.00  1.71186416  4.2881358 0.0000132
 ~~~
 {: .output}
 
 The $Treatment section of this output supports our conclusion from the two-way
-ANOVA that Prozac increases happiness score, by an average of 1.6 happiness
-units (95% CI: 0.95-2.3). The $Treatment:Gender section indicates that Prozac
-has no effect on happiness in females (or at least, not a statistically
-signficant effect), but in males it increases happiness by approximatey 3.0
+ANOVA that vaccination increases antibody levels by an average of 1.6 
+units (95% CI: 0.95-2.3). The $Treatment:Gender section indicates that vaccination
+has no effect on antibody levels in females (or at least, not a statistically
+signficant effect), but in males it increases levels by approximately 3.0
 units.
 
 ### Checking assumptions
