@@ -377,7 +377,7 @@ par(mfrow=c(1,1))
 
 ```r
 # Then using ggplot to separate out the four different combinations of factor
-ggplot(data = vaccine, aes(x = Treatment, y = Score, fill = Gender)) +
+ggplot(data = vaccine, aes(x = Treatment, y = Ab_level, fill = Gender)) +
   geom_boxplot(position = position_dodge())
 ```
 
