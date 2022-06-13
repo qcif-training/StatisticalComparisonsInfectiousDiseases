@@ -122,26 +122,26 @@ a given experimental design
 ## Final practice exercises
 > ## Challenge 2
 >
-> Do patients with multiple gallstones experience more recurrences than those
-> with single stones?
+> Do patients with extrapulmonary infection experience more recurrences than those
+> without ?
 > > ## Solution to Challenge 2
 > >
-> > The variables of interest are multiple stones (categorical, 2 groups)
+> > The variables of interest are extrapulmonary infection (categorical, 2 groups)
 > > and recurrence (categorical, 2 groups). The appropriate test is therefore
 > > either Chi-square or Fisher's Exact, depending on the expected count for
 > > each category
 > > ```r
 > > # Create the frequency table
-> > table(gallstones$Rec,gallstones$Mult)
+> > table(tuberculosis$Rec,tuberculosis$ExtraPul)
 > >
 > > # Complete Cross-table
 > > library(gmodels)
-> > CrossTable(gallstones$Rec,gallstones$Mult,format="SPSS",prop.chisq=F,expected=T)
+> > CrossTable(tuberculosis$Rec,tuberculosis$ExtraPul,format="SPSS",prop.chisq=F,expected=T)
 > >
 > > # Visualisation
 > >
 > > library(ggplot2)
-> > ggplot(gallstones, aes(Rec, fill=Mult)) +
+> > ggplot(tuberculosis, aes(Rec, fill=ExtraPul)) +
 > >   geom_bar(position="fill") +
 > >   scale_y_continuous(labels=scales::percent) +
 > >   theme(axis.text=element_text(size=18),
@@ -149,117 +149,118 @@ a given experimental design
 > >         legend.title=element_text(size=18),
 > >         axis.title=element_text(size=18),
 > >         plot.title = element_text(size=22, face="bold"))+
-> >   ggtitle("Recurrence vs. Mult")
+> >   ggtitle("Recurrence vs. ExtraPulmonary Infection")
 > >
 > > # Chi-square test performed because more than 5 expected counts in each cell
-> > chisq.test(gallstones$Rec,gallstones$Mult)
+> > chisq.test(tuberculosis$Rec,gallstones$ExtraPul)
 > > ```
 > > ### Conclusion
 > > With a p-value of 0.1295, there is no evidence for a significant association
-> > between gallstone recurrence and the presence of multiple stones
+> > between disease recurrence and the presence of extrapulmonary infection
 > {: .solution}
 {: .challenge}
 
 > ## Challenge 3
 >
-> Is the patient's age associated with gallstone recurrence?
+> Is the patient's age associated with disease recurrence?
 > > ## Solution to Challenge 3
 > >
-> > The variables of interest are gallstone recurrence (categorical, 2 groups)
+> > The variables of interest are disease recurrence (categorical, 2 groups)
 > > and age (continuous). The appropriate test is therefore either the t-test
 > > or Mann-Whitney test, depending on whether the data is normally distributed
 > > or not
 > > ```r
 > > # Test normality in both groups
-> > shapiro.test(gallstones$Age[which(gallstones$Rec=="NoRecurrence")])
-> > shapiro.test(gallstones$Age[which(gallstones$Rec=="Recurrence")])
+> > shapiro.test(gallstones$Age[which(tuberculosis$Rec=="NoRecurrence")])
+> > shapiro.test(gallstones$Age[which(tuberculosis$Rec=="Recurrence")])
 > >
 > > # Other option
-> > by(gallstones$Age,gallstones$Rec,shapiro.test)
+> > by(tuberculosis$Age,tuberculosis$Rec,shapiro.test)
 > >
 > > # We have to perform a Mann-Whitney test
-> > wilcox.test(gallstones$Age~gallstones$Rec)
+> > wilcox.test(tuberculosis$Age~tuberculosis$Rec)
 > >
 > > # Boxplots to visualise
-> > plot(gallstones$Age~gallstones$Rec,col=c("red","blue"),ylab="Age",
+> > plot(tuberculosis$Age~tuberculosis$Rec,col=c("red","blue"),ylab="Age",
 > >      xlab="Recurrence",cex.lab=1.3)
 > >
 > > # Statistical descriptions
-> > by(gallstones$Age,gallstones$Rec,median)
-> > by(gallstones$Age,gallstones$Rec,IQR)
+> > by(tuberculosis$Age,tuberculosis$Rec,median)
+> > by(tuberculosis$Age,tuberculosis$Rec,IQR)
 > >
-> > by(gallstones$Age,gallstones$Rec,mean)
-> > by(gallstones$Age,gallstones$Rec,sd)
+> > by(tuberculosis$Age,tuberculosis$Rec,mean)
+> > by(tuberculosis$Age,tuberculosis$Rec,sd)
 > > ```
 > > ### Conclusion
-> > With a p-value of 0.7707, there is no evidence for a significant association
-> > between gallstone recurrence and the age of patients
+> > With a p-value of 0.747, there is no evidence for a significant association
+> > between disease recurrence and the age of patients
 > {: .solution}
 {: .challenge}
 
 > ## Challenge 4
 >
-> Does alcohol consumption influence the time to gallstone dissolution?
+> Does alcohol consumption influence the duration that treatment is required?
 > > ## Solution to Challenge 4
 > >
 > > The variables of interest are alcohol consumption (categorical, 3 groups)
-> > and dissolution time (continuous). The appropriate test is therefore either
-> > ANOVA or Kruskal-Wallis, depending on whether the data is normally
+> > and treatment duration time (continuous). The appropriate test is therefore 
+> > either ANOVA or Kruskal-Wallis, depending on whether the data is normally
 > > distributed or not
 > > ```r
 > > # Test normality in each groups
-> > by(gallstones$Dis,gallstones$Alcohol.Consumption,shapiro.test)
+> > by(tuberculosis$Duration,tuberculosis$Alcohol.Consumption,shapiro.test)
 > >
 > > # If distribution normal in each group
-> > result<-aov(gallstones$Dis~gallstones$Alcohol.Consumption)
+> > result<-aov(tuberculosis$Duration~tuberculosis$Alcohol.Consumption)
 > > summary(result)
 > >
 > > # If distribution not normal
-> > kruskal.test(gallstones$Dis~gallstones$Alcohol.Consumption)
+> > kruskal.test(tuberculosis$Duration~tuberculosis$Alcohol.Consumption)
 > >
 > > # Visualisation
-> > plot(gallstones$Dis~gallstones$Alcohol.Consumption,col=2:4)
+> > plot(tuberculosis$Duration~tuberculosis$Alcohol.Consumption,col=2:4)
 > > ```
 > > ### Conclusion
 > > With a p-value of 0.2389, there is no evidence for a significant association
-> > between alcohol consumption and dissolution time
+> > between alcohol consumption and treatment duration
 > {: .solution}
 {: .challenge}
 
 > ## Challenge 5
 >
-> Is there any effect of treatment and/or gender on the time to dissolution?
+> Is there any effect of treatment and/or gender on the required treatment 
+> duration?
 > > ## Solution to Challenge 5
 > >
 > > The variables of interest are gender (categorical, 2 groups), treatment
-> > (categorical, two groups) and dissolution time (continuous). The appropriate
+> > (categorical, two groups) and duration (continuous). The appropriate
 > > test is therefore a two-way ANOVA
 > > ```r
 > > # Visualisation
 > > par(mfrow=c(1,2))
-> > plot(Dis~Treatment+Gender, data=gallstones)
+> > plot(Duration~Treatment+Gender, data=tuberculosis)
 > >
 > > # Interaction plot to visualise
-> > interaction.plot(gallstones$Treatment, gallstones$Gender, gallstones$Dis,
+> > interaction.plot(tuberculosis$Treatment, tuberculosis$Gender, tuberculosis$Duration,
 > >                  col=2:3,lwd=3,cex.axis=1.5,cex.lab=1.5)
 > >
 > > # anova 2 way with aov function
-> > result<-aov(Dis~Treatment+Gender+Treatment*Gender,data=gallstones)
+> > result<-aov(Duration~Treatment+Gender+Treatment*Gender,data=tuberculosis)
 > > summary(result)
 > >
 > > # anova 2 way with lm function
-> > result<-lm(Dis~Treatment+Gender+Treatment*Gender,data=gallstones)
+> > result<-lm(Duration~Treatment+Gender+Treatment*Gender,data=tuberculosis)
 > > anova(result)
 > >
 > > # Checking the assumptions of anova
 > >
-> > result<-lm(Dis~Treatment+Gender+Treatment*Gender,data=gallstones)
+> > result<-lm(Duration~Treatment+Gender+Treatment*Gender,data=tuberculosis)
 > > plot(result)
 > > ```
 > > ### Conclusion
-> > With a p-value of <0.0016, there is evidence for a significant effect  of
-> > treatment on dissolution time. There is no evidence for a difference between
-> > genders for dissolution time, nor evidence for an interaction between
+> > With a p-value of <0.0016, there is evidence for a significant effect of
+> > treatment on treatment duration. There is no evidence for a difference between
+> > genders for treatment duration, nor evidence for an interaction between
 > > treatment and gender (both males and females have a similar response).
 > {: .solution}
 {: .challenge}
