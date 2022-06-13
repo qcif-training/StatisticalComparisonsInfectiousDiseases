@@ -28,7 +28,7 @@ how to identify whether a single continuous trait differs between two sample
 groups - a two sample test. Specifically, we will investigate whether there is a
 statistically-significant difference between the distribution of that variable
 between the two groups. As an example, we will test whether male patients in our
-gallstones study are taller than female patients.
+tuberculosis study are taller than female patients.
 
 > ## Discussion
 >
@@ -65,8 +65,8 @@ test.
 
 > ## Challenge 1
 >
-> In our gallstones dataset, assume that BMI is normally distributed for
-> patients with a recurrence of gallstones and not normal for those with no
+> In our tuberculosis dataset, assume that BMI is normally distributed for
+> patients with a recurrence of tuberculosis and not normal for those with no
 > recurrence. Which test would we use to investigate whether those two groups
 > (with and without recurrence) had different BMIs?
 > > ## Solution to Challenge 1
@@ -125,7 +125,7 @@ means, by considering the data as rank order values rather than absolute values.
 
 ## Two sample test example
 
-Is there a difference in height between females and males in the gallstones
+Is there a difference in height between females and males in the tuberculosis
 dataset?
 
 Height: Continuous variable
@@ -137,7 +137,7 @@ We will start by reviewing the data using a boxplot to see if there is an
 indication of difference between the groups
 
 ```r
-plot(gallstones$Height ~ gallstones$Gender,
+plot(tuberculosis$Height ~ tuberculosis$Gender,
      col=c('red','blue'),
      ylab = 'Height',
      xlab = 'Gender')
@@ -151,8 +151,8 @@ _Step two - is the data normally distributed?_
 
 ```r
 par(mfrow=c(1,2))
-hist(gallstones$Height[which(gallstones$Gender == 'F')], main = "Histogram of heights of females", xlab = "")
-hist(gallstones$Height[which(gallstones$Gender == 'M')], main = "Histogram of heights of males", xlab = "")
+hist(tuberculosis$Height[which(tuberculosis$Gender == 'F')], main = "Histogram of heights of females", xlab = "")
+hist(tuberculosis$Height[which(tuberculosis$Gender == 'M')], main = "Histogram of heights of males", xlab = "")
 par(mfrow=c(1,1))
 ```
 ![RStudio layout](../fig/05-fig3.png)
@@ -162,11 +162,11 @@ points. A more convincing way to determine this would be with the Shapiro-Wilks
 test
 
 ```r
-by(gallstones$Height, gallstones$Gender, shapiro.test)
+by(tuberculosis$Height, tuberculosis$Gender, shapiro.test)
 ```
 
 ~~~
-## gallstones$Gender: F
+## tuberculosis$Gender: F
 ##
 ## 	Shapiro-Wilk normality test
 ##
@@ -174,7 +174,7 @@ by(gallstones$Height, gallstones$Gender, shapiro.test)
 ## W = 0.94142, p-value = 0.2324
 ##
 ## ------------------------------------------------------------
-## gallstones$Gender: M
+## tuberculosis$Gender: M
 ##
 ## 	Shapiro-Wilk normality test
 ##
@@ -191,14 +191,14 @@ _Step three - are variances equal?_
 
 ```r
 # A quick and dirty test - how similar are the standard deviations?
-by(gallstones$Height, gallstones$Gender, sd)
+by(tuberculosis$Height, tuberculosis$Gender, sd)
 ```
 
 ~~~
-## gallstones$Gender: F
+## tuberculosis$Gender: F
 ## [1] 5.518799
 ## ------------------------------------------------------------
-## gallstones$Gender: M
+## tuberculosis$Gender: M
 ## [1] 9.993331
 ~~~
 {: .output}
@@ -216,7 +216,7 @@ library(DescTools)
 {: .output}
 
 ```r
-LeveneTest(gallstones$Height ~ gallstones$Gender)
+LeveneTest(tuberculosis$Height ~ tuberculosis$Gender)
 ```
 
 ~~~
@@ -241,14 +241,14 @@ _Step four - carry out a T-test_
 # Specify equal variance using the var.equal = TRUE argument.
 # var.equal would be set to FALSE if the p-value of the Levene's test was less
 # than 0.05, and the `t.test` function would then run a Welch's two-sample test.
-t.test(gallstones$Height ~ gallstones$Gender, var.equal = TRUE)
+t.test(tuberculosis$Height ~ tuberculosis$Gender, var.equal = TRUE)
 ```
 
 ~~~
 ##
 ## 	Two Sample t-test
 ##
-## data:  gallstones$Height by gallstones$Gender
+## data:  tuberculosis$Height by tuberculosis$Gender
 ## t = -3.6619, df = 35, p-value = 0.00082
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
@@ -266,26 +266,27 @@ and females in our dataset.
 
 > ## Challenge 2
 >
-> Using the gallstones dataset, test whether the gallstone diameter ("Diam") is
-> different between patients who suffer a recurrence and those who do not.
+> Using the tuberculosis dataset, test whether the duration of antibiotic 
+> treatment ("Duration") is different between patients who suffer a recurrence
+> and those who do not.
 > > ## Solution to Challenge 2
 > >
 > >
 > > ```r
 > > # Visualise data
-> > boxplot(gallstones$Diam ~ gallstones$Rec, col = c("red","blue"),
-> >      ylab = "Diameter",
+> > boxplot(tuberculosis$Duration ~ tuberculosis$Rec, col = c("red","blue"),
+> >      ylab = "Duration",
 > >      xlab = "Recurrence")
 > > # Test whether data is normally distributecd
-> > by(gallstones$Diam, gallstones$Rec, hist)
-> > by(gallstones$Diam, gallstones$Rec, shapiro.test)
+> > by(tuberculosis$Duration, tuberculosis$Rec, hist)
+> > by(tuberculosis$Duration, tuberculosis$Rec, shapiro.test)
 > > ```
 > > Data is not normal for the recurrence group, and data is not paired - hence
 > > Mann-Whitney test
 > >
 > > ```r
 > > # Use wilcox.test function which defaults to Mann-Whitney analysis
-> > wilcox.test(gallstones$Diam ~ gallstones$Rec)
+> > wilcox.test(tuberculosis$Duration ~ tuberculosis$Rec)
 > > ```
 > > The p-value is not significant, so we do not have sufficient evidence to
 > > reject the null hypothesis that there is no difference in gallstone size
@@ -303,54 +304,54 @@ combined with summary functions
 
 ```r
 # For normally distributed data, report the mean and standard deviation
-by(gallstones$Height, gallstones$Gender, mean)
+by(tuberculosis$Height, tuberculosis$Gender, mean)
 ```
 
 ~~~
-## gallstones$Gender: F
+## tuberculosis$Gender: F
 ## [1] 160.5714
 ## ------------------------------------------------------------
-## gallstones$Gender: M
+## tuberculosis$Gender: M
 ## [1] 170
 ~~~
 {: .output}
 
 ```r
-by(gallstones$Height, gallstones$Gender, sd)
+by(tuberculosis$Height, tuberculosis$Gender, sd)
 ```
 
 ~~~
-## gallstones$Gender: F
+## tuberculosis$Gender: F
 ## [1] 5.518799
 ## ------------------------------------------------------------
-## gallstones$Gender: M
+## tuberculosis$Gender: M
 ## [1] 9.993331
 ~~~
 {: .output}
 
 ```r
 # For non-normally distributed data, report the median and inter-quartile range
-by(gallstones$Diam, gallstones$Rec, median)
+by(tuberculosis$Duration, tuberculosis$Rec, median)
 ```
 
 ~~~
-## gallstones$Rec: NoRecurrence
+## tuberculosis$Rec: NoRecurrence
 ## [1] 10
 ## ------------------------------------------------------------
-## gallstones$Rec: Recurrence
+## tuberculosis$Rec: Recurrence
 ## [1] 8.5
 ~~~
 {: .output}
 
 ```r
-by(gallstones$Diam, gallstones$Rec, IQR)
+by(tuberculosis$Duration, tuberculosis$Rec, IQR)
 ```
 
 ~~~
-## gallstones$Rec: NoRecurrence
+## tuberculosis$Rec: NoRecurrence
 ## [1] 12
 ## ------------------------------------------------------------
-## gallstones$Rec: Recurrence
+## tuberculosis$Rec: Recurrence
 ## [1] 9
 ~~~
 {: .output}
@@ -359,21 +360,21 @@ by(gallstones$Diam, gallstones$Rec, IQR)
 # Many of the summary statistics can be calculated in one step with the FSA
 # Summarize function
 library(FSA)
-Summarize(gallstones$Height~gallstones$Gender)
+Summarize(tuberculosis$Height~tuberculosis$Gender)
 ```
 
 ~~~
-##   gallstones$Gender  n     mean       sd min  Q1 median     Q3 max
+##   tuberculosis$Gender  n     mean       sd min  Q1 median     Q3 max
 ## 1                 F 21 160.5714 5.518799 147 157  161.0 163.00 170
 ## 2                 M 16 170.0000 9.993331 156 164  167.5 175.25 189
 ~~~
 {: .output}
 
 ```r
-Summarize(gallstones$Diam~gallstones$Rec)
+Summarize(tuberculosis$Duration~tuberculosis$Rec)
 ```
 ~~~
-##   gallstones$Rec  n     mean       sd min Q1 median Q3 max
+##   tuberculosis$Rec  n     mean       sd min Q1 median Q3 max
 ## 1   NoRecurrence 21 12.42857 7.440238   3  6   10.0 18  27
 ## 2     Recurrence 16 10.06250 6.180278   4  5    8.5 14  26
 ~~~
@@ -391,3 +392,4 @@ other), and the data must be the same sample order in each group.
 Otherwise, paired sample analysis is performed in a similar way to unpaired
 analysis. The main difference is to add the `paired = TRUE` argument to the
 `t.test` or `wilcox.test` function.
+
