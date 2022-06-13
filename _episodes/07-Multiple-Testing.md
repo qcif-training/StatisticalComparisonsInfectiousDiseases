@@ -171,8 +171,8 @@ a given experimental design
 > > or not
 > > ```r
 > > # Test normality in both groups
-> > shapiro.test(gallstones$Age[which(tuberculosis$Rec=="NoRecurrence")])
-> > shapiro.test(gallstones$Age[which(tuberculosis$Rec=="Recurrence")])
+> > shapiro.test(tuberculosis$Age[which(tuberculosis$Rec=="NoRecurrence")])
+> > shapiro.test(tuberculosis$Age[which(tuberculosis$Rec=="Recurrence")])
 > >
 > > # Other option
 > > by(tuberculosis$Age,tuberculosis$Rec,shapiro.test)
