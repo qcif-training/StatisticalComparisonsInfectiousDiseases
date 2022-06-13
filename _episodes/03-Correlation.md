@@ -63,13 +63,13 @@ consistant way
 
 ## Previewing relationships with scatter plots
 
-The gallstones dataset contains a number of continuous variables. The first step
+The tuberculosis dataset contains a number of continuous variables. The first step
 in studying potential relationships between these is to examine them using
 scatter plots
 
 
 ```r
-plot(gallstones$Height, gallstones$Weight,
+plot(tuberculosis$Height, tuberculosis$Weight,
      xlab = "Height",
      ylab = "Weight",
      cex.lab=0.8, cex.main=1,pch=1, # Set some plot formatting
@@ -84,7 +84,7 @@ function with which you can add a line showing the best correlation estimate
 
 ```r
 library(ggplot2)
-ggplot(gallstones, aes(x = Height, y = Weight)) +
+ggplot(tuberculosis, aes(x = Height, y = Weight)) +
   geom_point(shape = 1, size = 3) +
   geom_smooth(method = lm, se = F) +
   theme(axis.text = element_text(size = 12),
@@ -94,13 +94,13 @@ ggplot(gallstones, aes(x = Height, y = Weight)) +
 
 > ## Challenge 2
 >
-> As well as height and weight, the gallstones dataset contains a number of
+> As well as height and weight, the tuberculosis dataset contains a number of
 > other continuous variables, including age and BMI. Plot any two of these to
 > see if they show signs of correlation
 > > ## Solution to challenge 2
 > >
 > > Using Weight and BMI as an example:
-> > `plot(gallstones$Weight, gallstones$BMI)`
+> > `plot(tuberculosis$Weight, tuberculosis$BMI)`
 > >
 > > As you might expect, increased weight seems to be associated with increased
 > > BMI. Height is, as we've seen, correlated with weight but much less so with
@@ -119,7 +119,7 @@ ggplot(gallstones, aes(x = Height, y = Weight)) +
 > > > # which you can scroll though using the arrows at the top of the panel
 > > > for (data1 in c("Age","Height","Weight","BMI")) {
 > > >   for (data2 in c("Age","Height","Weight","BMI")) {
-> > >     plot(gallstones[,data1], gallstones[,data2], xlab=data1, ylab=data2)
+> > >     plot(tuberculosis[,data1], tuberculosis[,data2], xlab=data1, ylab=data2)
 > > >   }
 > > > }
 > > > # Once you've looked at the graphs, reset the plotting layout
@@ -179,37 +179,37 @@ correlated, so we will calculate the correlation value for these variables.
 
 ```r
 # First, test if the variables are normally distributed
-hist(gallstones$Height)
+hist(tuberculosis$Height)
 ```
 ![RStudio layout](../fig/03-fig5.png)
 
 ```r
-hist(gallstones$Weight)
+hist(tuberculosis$Weight)
 ```
 ![RStudio layout](../fig/03-fig6.png)
 
 ```r
-shapiro.test(gallstones$Height)
+shapiro.test(tuberculosis$Height)
 ```
 
 ~~~
 ##
 ## 	Shapiro-Wilk normality test
 ##
-## data:  gallstones$Height
+## data:  tuberculosis$Height
 ## W = 0.89975, p-value = 0.002901
 ~~~
 {: .output}
 
 ```r
-shapiro.test(gallstones$Weight)
+shapiro.test(tuberculosis$Weight)
 ```
 
 ~~~
 ##
 ## 	Shapiro-Wilk normality test
 ##
-## data:  gallstones$Weight
+## data:  tuberculosis$Weight
 ## W = 0.94652, p-value = 0.07454
 ~~~
 {: .output}
@@ -220,14 +220,14 @@ Therefore we should use Spearman's test for this analysis.
 
 
 ```r
-cor.test(gallstones$Height, gallstones$Weight, method="spearman")
+cor.test(tuberculosis$Height, tuberculosis$Weight, method="spearman")
 ```
 
 ~~~
 ##
 ## 	Spearman's rank correlation rho
 ##
-## data:  gallstones$Height and gallstones$Weight
+## data:  tuberculosis$Height and tuberculosis$Weight
 ## S = 3246.8, p-value = 5.093e-05
 ## alternative hypothesis: true rho is not equal to 0
 ## sample estimates:
@@ -263,31 +263,32 @@ correlation is significantly different from zero.
 
 > ## Challenge 4
 >
-> The gallstones dataset contains two continuous variables about the properties
-> of patients' gallstones - their diameter (_Diam_) and the time taken for full
-> dissolution (_Dis_). Is there evidence for correlation of these properties?
+> The tuberculosis dataset contains two continuous variables relevant to the 
+> disease severity of the patients - the time which they have been in prison
+> prior to diagnosis (Term), and the duration of antibiotic treatment required 
+> (Duration). Is there evidence for correlation of these properties?
 > > ## Solution to challenge 4
 > > First, plot the data
 > >
 > > ```r
-> > plot(gallstones$Diam, gallstones$Dis,
-> >      xlab="Diameter", ylab="Dissolution time",
-> >      main="Plot of dissolution time against diameter"
+> > plot(tuberculosis$Term, tuberculosis$Duration,
+> >      xlab="Term of imprisonment", ylab="Duration of treatment",
+> >      main="Plot of prison term against treatment duration"
 > > )
 > > ```
 > > There is no obvious sign of correlation, but we can confirm that mathematically
 > >
 > > ```r
 > > # Test data for normality
-> > hist(gallstones$Diam)
-> > hist(gallstones$Dis)
-> > shapiro.test(gallstones$Diam)
-> > shapiro.test(gallstones$Dis)
+> > hist(tuberculosis$Duration)
+> > hist(tuberculosis$Term)
+> > shapiro.test(tuberculosis$Duration)
+> > shapiro.test(tuberculosis$Term)
 > > # Neither appears to be normally distributed, so use Spearman's correlation
-> > cor.test(gallstones$Diam, gallstones$Dis, method="spearman")
+> > cor.test(tuberculosis$Duration, tuberculosis$Term, method="spearman")
 > > ```
 > > The correlation coefficient is near zero, and the p-value not significant -
-> > there is no evidence of a relationship between stone diameter and time to
-> > dissolution
+> > there is no evidence of a relationship between prison time prior to diagnosis
+> > and treatment duration required
 > {: .solution}
 {: .challenge}
