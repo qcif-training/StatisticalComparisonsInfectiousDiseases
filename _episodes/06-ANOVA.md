@@ -40,7 +40,7 @@ data is paired, as outlined in the figure below.
 > ## Challenge 1
 >
 > Based on what you have learned previously in this workshop, how can we best
-> determine whether the data in each sample is normally distributed
+> determine whether the data in each sample is normally distributed?
 > > ## Solution to Challenge 1
 > >
 > > We can use the `shapiro.test` function to test for normality - or rather, to
@@ -52,7 +52,7 @@ data is paired, as outlined in the figure below.
 > > ```
 > > Remember, as with the two sample tests, if any one group is not normally
 > > distributed, the whole analysis must be performed with the relevant
-> > non-parametric test
+> > non-parametric test.
 > {: .solution}
 {: .challenge}
 
@@ -78,7 +78,7 @@ H<sub>1</sub>: µ<sub>1</sub> ≠ µ<sub>2</sub> OR µ<sub>1</sub> ≠ µ<sub>3<
 
 The ANOVA extension of the t-test is called the **F-test**, and is based around
 decomposing the total variation in the sample into the variability (sum of
-squares) within groups and between groups
+squares) within groups and between groups.
 
 ![RStudio layout](../fig/06-fig2.png)
 
@@ -96,10 +96,10 @@ There are two variables - one categorical with more than two levels and one
 continuous. The data are not paired - all the measurements are from different
 patients. So based on the decision tree, the appropriate test is either one-way
 ANOVA or Kruskal-Wallis test. The choice between these is made depending on
-whether the data is normally distributed or not
+whether the data is normally distributed or not.
 
 ```r
-table(gallstones$Alcohol.Consumption)
+table(tuberculosis$Alcohol.Consumption)
 ```
 
 ~~~
@@ -110,11 +110,11 @@ table(gallstones$Alcohol.Consumption)
 {: .output}
 
 ```r
-by(gallstones$Weight, gallstones$Alcohol.Consumption, shapiro.test)
+by(tuberculosis$Weight, tuberculosis$Alcohol.Consumption, shapiro.test)
 ```
 
 ~~~
-## gallstones$Alcohol.Consumption: NonAlcohol
+## tuberculosis$Alcohol.Consumption: NonAlcohol
 ##
 ## 	Shapiro-Wilk normality test
 ##
@@ -122,7 +122,7 @@ by(gallstones$Weight, gallstones$Alcohol.Consumption, shapiro.test)
 ## W = 0.79876, p-value = 0.01976
 ##
 ## ------------------------------------------------------------
-## gallstones$Alcohol.Consumption: Previous
+## tuberculosis$Alcohol.Consumption: Previous
 ##
 ## 	Shapiro-Wilk normality test
 ##
@@ -130,7 +130,7 @@ by(gallstones$Weight, gallstones$Alcohol.Consumption, shapiro.test)
 ## W = 0.95864, p-value = 0.7703
 ##
 ## ------------------------------------------------------------
-## gallstones$Alcohol.Consumption: Alcohol
+## tuberculosis$Alcohol.Consumption: Alcohol
 ##
 ## 	Shapiro-Wilk normality test
 ##
@@ -146,20 +146,20 @@ analysis
 
 
 ```r
-kruskal.test(gallstones$Weight ~ gallstones$Alcohol.Consumption)
+kruskal.test(tuberculosis$Weight ~ tuberculosis$Alcohol.Consumption)
 ```
 
 ~~~
 ##
 ## 	Kruskal-Wallis rank sum test
 ##
-## data:  gallstones$Weight by gallstones$Alcohol.Consumption
+## data:  tuberculosis$Weight by tuberculosis$Alcohol.Consumption
 ## Kruskal-Wallis chi-squared = 0.89142, df = 2, p-value = 0.6404
 ~~~
 {: .output}
 
 ```r
-boxplot(gallstones$Weight ~ gallstones$Alcohol.Consumption)
+boxplot(tuberculosis$Weight ~ tuberculosis$Alcohol.Consumption)
 ```
 
 ![RStudio layout](../fig/06-fig3.png)
@@ -173,13 +173,13 @@ three categories.
 For comparison and practice, let's also perform an ANOVA
 
 ```r
-result <- aov(gallstones$Weight~gallstones$Alcohol.Consumption)
+result <- aov(tuberculosis$Weight~tuberculosis$Alcohol.Consumption)
 summary(result)
 ```
 
 ~~~
 ##                                Df Sum Sq Mean Sq F value Pr(>F)
-## gallstones$Alcohol.Consumption  2    369   184.4   0.685  0.511
+## tuberculosis$Alcohol.Consumption  2    369   184.4   0.685  0.511
 ## Residuals                      34   9151   269.1
 ~~~
 {: .output}
@@ -200,7 +200,7 @@ any) are different.
 
 ```r
 # Dunn's test, since we used Kruskal-Wallis for the initial analysis
-dunnTest(gallstones$Weight~gallstones$Alcohol.Consumption, method = "bonferroni")
+dunnTest(tuberculosis$Weight~tuberculosis$Alcohol.Consumption, method = "bonferroni")
 ```
 
 ~~~
@@ -230,9 +230,9 @@ TukeyHSD(result)
 ##   Tukey multiple comparisons of means
 ##     95% family-wise confidence level
 ##
-## Fit: aov(formula = gallstones$Weight ~ gallstones$Alcohol.Consumption)
+## Fit: aov(formula = tuberculosis$Weight ~ tuberculosis$Alcohol.Consumption)
 ##
-## $`gallstones$Alcohol.Consumption`
+## $`tuberculosis$Alcohol.Consumption`
 ##                           diff       lwr      upr     p adj
 ## Previous-NonAlcohol -0.2777778 -18.74892 18.19336 0.9992516
 ## Alcohol-NonAlcohol   6.1666667 -10.24537 22.57870 0.6311298
@@ -254,10 +254,10 @@ p-value reported for each pairwise comparison
 > >
 > >
 > > ```r
-> > # Create a copy of the gallstones data frame so as not to break things later
-> > dummy_data <- gallstones
+> > # Create a copy of the tuberculosis data frame so as not to break things later
+> > dummy_data <- tuberculosis
 > > # Double the weight for Alcohol.Consumption category 'Alcohol'
-> > ac_three <- which(gallstones$Alcohol.Consumption == 'Alcohol')
+> > ac_three <- which(tuberculosis$Alcohol.Consumption == 'Alcohol')
 > > dummy_data[ac_three, "Weight"] <- 2 * dummy_data[ac_three, "Weight"]
 > > # Then do the testing
 > > kruskal.test(dummy_data$Weight ~ dummy_data$Alcohol.Consumption)
