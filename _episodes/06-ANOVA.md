@@ -579,15 +579,15 @@ These more advanced tests are beyond the scope of this workshop, but some are
 covered in our **Longitudinal and Mixed Model Analysis** course.
 
 > ## Challenge 4
-> Can you think of a modification to our Happiness trial example which would
+> Can you think of a modification to our Vaccine trial example which would
 > mean it should be analysed using a paired data technique?
 >
 > > ## Solution to Challenge 4
 > > One option would be that if, rather than testing on 24 individuals assigned
 > > randomly to placebo/treatment groups, the trial was instead carried out with
-> > 12 people and happiness scores recorded before and after treatment with
-> > Prozac. Or perhaps a stricter design - 24 individuals treated with either
-> > Prozac or placebo, with happiness scores recorded before and after
+> > 12 people and antibody levels recorded before and after vaccination.
+> > Or perhaps a stricter design - 24 individuals treated with either
+> > vaccine or placebo, with antibody levels recorded before and after
 > > treatment.
 > {: .solution}
 {: .challenge}
