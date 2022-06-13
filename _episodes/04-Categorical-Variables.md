@@ -23,7 +23,7 @@ output: html_document
 
 ## Introducing categorical data
 
-Having looked at the gallstones dataset, you will have noticed that many of the
+Having looked at the tuberculosis dataset, you will have noticed that many of the
 columns contain just two or three distinct values - for example, M and F, or 1,
 2, and 3. These are examples of __categorical__ data - where samples are
 assigned to one of a limited number of fixed, distinct categories. Categories
@@ -50,18 +50,18 @@ workshop - talk to a statistician if you need more advice.
 
 > ## Challenge 1
 >
-> Look again at the gallstones dataset. How many categorical fields does it
+> Look again at the tuberculosis dataset. How many categorical fields does it
 > contain?
 > > ## Solution to Challenge 1
 > >
 > > There are seven categorical fields in this dataset: Gender, Obese,
-> > Smoking.Status, Alcohol.Consumption, Treatment, Rec, and Mult
+> > Smoking.Status, Alcohol.Consumption, Treatment, Rec, and ExtraPul
 > {: .solution}
 {: .challenge}
 
 ## Using factors for categorical data
 
-With the exception of Gender, all the categorical variables in the gallstones
+With the exception of Gender, all the categorical variables in the tuberculosis
 dataframe have been recorded as integer fields. This may cause confusion because
 it would be possible in principle to analyse these as continuous variables. R
 includes the factor data type, which provides a way to store a fixed, predefined
@@ -71,36 +71,36 @@ convert those columns to factors.
 
 ```r
 # Either convert the columns one at a time
-gallstones$Obese <- as.factor(gallstones$Obese) # and repeat for other five
+tuberculosis$Obese <- as.factor(tuberculosis$Obese) # and repeat for other five
 # Or all together: variables Obese to Mult (columns 7-12) need to be categorical
-gallstones[,7:12] <- data.frame(lapply(gallstones[,7:12], as.factor))
+tuberculosis[,7:12] <- data.frame(lapply(tuberculosis[,7:12], as.factor))
 
 # While we're at it, convert the levels to meaningful category names
-levels(gallstones$Obese) <- c("NonObese", "Obese")
-levels(gallstones$Treatment) <- c("Untreated", "Treated")
-levels(gallstones$Rec) <- c("NoRecurrence", "Recurrence")
-levels(gallstones$Smoking.Status)<-c("NonSmoker","Smoker")
-levels(gallstones$Alcohol.Consumption)<-c("NonAlcohol","Previous","Alcohol")
-levels(gallstones$Mult)<-c("Single","Multiple")
-str(gallstones)
+levels(tuberculosis$Obese) <- c("NonObese", "Obese")
+levels(tuberculosis$Treatment) <- c("Single", "Multiple")
+levels(tuberculosis$Rec) <- c("NoRecurrence", "Recurrence")
+levels(tuberculosis$Smoking.Status)<-c("NonSmoker","Smoker")
+levels(tuberculosis$Alcohol.Consumption)<-c("NonAlcohol","Previous","Alcohol")
+levels(tuberculosis$ExtraPul)<-c("Pulmonary","Extrapulmonary")
+str(tuberculosis)
 ```
 
 ~~~
 ## 'data.frame':	37 obs. of  14 variables:
 ##  $ Patient_ID         : chr  "P25" "P28" "P17" "P27" ...
 ##  $ Gender             : Factor w/ 2 levels "F","M": 1 1 2 1 1 1 1 1 1 1 ...
-##  $ Age                : int  64 81 77 80 86 69 75 77 73 88 ...
+##  $ Age                : int  32 41 38 40 43 35 38 39 31 44 ...
 ##  $ Height             : int  147 151 156 156 156 157 157 160 160 160 ...
 ##  $ Weight             : int  65 69 59 47 53 48 46 55 51 54 ...
 ##  $ BMI                : num  30.1 30.3 24.2 19.3 21.8 ...
 ##  $ Obese              : Factor w/ 2 levels "NonObese","Obese": 2 2 1 1 1 1 1 1 1 1 ...
 ##  $ Smoking.Status     : Factor w/ 2 levels "NonSmoker","Smoker": 2 2 2 2 2 1 2 2 2 1 ...
 ##  $ Alcohol.Consumption: Factor w/ 3 levels "NonAlcohol","Previous",..: 1 2 1 3 2 3 2 3 3 3 ...
-##  $ Treatment          : Factor w/ 2 levels "Untreated","Treated": 2 1 1 2 1 2 1 2 1 2 ...
+##  $ Treatment          : Factor w/ 2 levels "Single","Multiple": 2 1 1 2 1 2 1 2 1 2 ...
 ##  $ Rec                : Factor w/ 2 levels "NoRecurrence",..: 2 2 1 1 2 1 2 1 2 1 ...
-##  $ Mult               : Factor w/ 2 levels "Single","Multiple": 2 2 1 1 1 1 2 1 1 2 ...
-##  $ Diam               : int  6 7 20 15 18 19 14 18 15 5 ...
-##  $ Dis                : int  8 6 20 2 14 8 8 4 15 3 ...
+##  $ ExtraPul           : Factor w/ 2 levels "Pulmonary","Extrapulmonary": 2 2 1 1 1 1 2 1 1 2 ...
+##  $ Duration           : int  6 7 20 15 18 19 14 18 15 5 ...
+##  $ Term               : int  8 6 20 2 14 8 8 4 15 3 ...
 ~~~
 {: .output}
 
@@ -110,12 +110,12 @@ As with continuous data, it can often be useful to visualise categorical data
 before starting on more complex analysis. We can do this numerically with a
 simple count table, or graphically by expressing that table as a bar graph. For
 this example, we will test whether there is a relationship between obesity and
-the recurrence of gallstones.
+the recurrence of tuberculosis.
 
 
 ```r
 # Summarise the data into a table.
-counts <- table(gallstones$Rec, gallstones$Obese)
+counts <- table(tuberculosis$Rec, tuberculosis$Obese)
 counts
 ```
 
@@ -142,7 +142,7 @@ addmargins(counts)
 
 ```r
 # Displaying as proportions may be easier to interpret than counts
-round(prop.table(table(gallstones$Rec, gallstones$Obese), margin = 2)*100,2)
+round(prop.table(table(tuberculosis$Rec, tuberculosis$Obese), margin = 2)*100,2)
 ```
 
 ~~~
@@ -167,7 +167,7 @@ barplot(counts, beside=TRUE, legend=rownames(counts), col = c('red','blue'))
 ```r
 # ggplot can be used for higher quality figures, and to plot proportions rather
 # than counts
-ggplot(gallstones, aes(Obese, fill=Rec)) +
+ggplot(tuberculosis, aes(Obese, fill=Rec)) +
   geom_bar(position="fill") +
   scale_y_continuous(labels=scales::percent) +
   theme(axis.text=element_text(size=14),
@@ -211,7 +211,7 @@ What are the expected counts for each cell?
 ```r
 # CrossTable from gmodels library gives expected counts, and also proportions
 library(gmodels)
-CrossTable(gallstones$Rec, gallstones$Obese,
+CrossTable(tuberculosis$Rec, tuberculosis$Obese,
            format = "SPSS", expected = T, prop.chisq = F)
 ```
 
@@ -234,8 +234,8 @@ CrossTable(gallstones$Rec, gallstones$Obese,
 ##
 ## Total Observations in Table:  37
 ##
-##                | gallstones$Obese
-## gallstones$Rec | NonObese  |    Obese  | Row Total |
+##                | tuberculosis$Obese
+## tuberculosis$Rec | NonObese  |    Obese  | Row Total |
 ## ---------------|-----------|-----------|-----------|
 ##   NoRecurrence |       17  |        4  |       21  |
 ##                |   14.757  |    6.243  |           |
@@ -281,14 +281,14 @@ it is 63.6%
 Because one expected value is less than 5, we should use Fisher's Exact test
 
 ```r
-fisher.test(gallstones$Obese, gallstones$Rec)
+fisher.test(tuberculosis$Obese, tuberculosis$Rec)
 ```
 
 ~~~
 ##
 ## 	Fisher's Exact Test for Count Data
 ##
-## data:  gallstones$Obese and gallstones$Rec
+## data:  tuberculosis$Obese and tuberculosis$Rec
 ## p-value = 0.1514
 ## alternative hypothesis: true odds ratio is not equal to 1
 ## 95 percent confidence interval:
@@ -334,14 +334,14 @@ statistical power to detect a relationship.
 > >
 > > ```r
 > > # Create the initial counts table
-> > counts2 <- table(gallstones$Rec, gallstones$Treatment)
+> > counts2 <- table(tuberculosis$Rec, tuberculosis$Treatment)
 > > counts2
 > >
 > > # Plot using barplot
 > > barplot(counts2, beside = TRUE, legend = rownames(counts2),
 > >         col = c('red','blue'))
 > > # Or plot using ggplot
-> > ggplot(gallstones, aes(Treatment, fill=Rec)) +
+> > ggplot(tuberculosis, aes(Treatment, fill=Rec)) +
 > >   geom_bar(position="fill") +
 > >   scale_y_continuous(labels=scales::percent) +
 > >   theme(axis.text=element_text(size=14),
@@ -353,10 +353,10 @@ statistical power to detect a relationship.
 > >
 > > # Look at expected values to select Chi-square or Fisher's Exact
 > > library(gmodels) # Optional if the library is already installed
-> > CrossTable(gallstones$Treatment,gallstones$Rec,format="SPSS",prop.chisq=F,expected=T)
+> > CrossTable(tuberculosis$Treatment,tuberculosis$Rec,format="SPSS",prop.chisq=F,expected=T)
 > >
 > > # All expected values are greater than 5
-> > chisq.test(gallstones$Treatment, gallstones$Rec, correct=FALSE)
+> > chisq.test(tuberculosis$Treatment, tuberculosis$Rec, correct=FALSE)
 > > ```
 > > Again, despite the barplot suggesting an association, the p-value is
 > > non-significant, so we reject the alternative hypothesis that treatment has
