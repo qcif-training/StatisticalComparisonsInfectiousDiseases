@@ -152,7 +152,7 @@ a given experimental design
 > >   ggtitle("Recurrence vs. ExtraPulmonary Infection")
 > >
 > > # Chi-square test performed because more than 5 expected counts in each cell
-> > chisq.test(tuberculosis$Rec,gallstones$ExtraPul)
+> > chisq.test(tuberculosis$Rec,tuberculosis$ExtraPul)
 > > ```
 > > ### Conclusion
 > > With a p-value of 0.1295, there is no evidence for a significant association
