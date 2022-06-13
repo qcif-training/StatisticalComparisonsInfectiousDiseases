@@ -336,10 +336,10 @@ by(tuberculosis$Duration, tuberculosis$Rec, median)
 
 ~~~
 ## tuberculosis$Rec: NoRecurrence
-## [1] 10
+## [1] 8
 ## ------------------------------------------------------------
 ## tuberculosis$Rec: Recurrence
-## [1] 8.5
+## [1] 11
 ~~~
 {: .output}
 
@@ -349,10 +349,10 @@ by(tuberculosis$Duration, tuberculosis$Rec, IQR)
 
 ~~~
 ## tuberculosis$Rec: NoRecurrence
-## [1] 12
+## [1] 6
 ## ------------------------------------------------------------
 ## tuberculosis$Rec: Recurrence
-## [1] 9
+## [1] 6.75
 ~~~
 {: .output}
 
@@ -375,8 +375,8 @@ Summarize(tuberculosis$Duration~tuberculosis$Rec)
 ```
 ~~~
 ##   tuberculosis$Rec  n     mean       sd min Q1 median Q3 max
-## 1   NoRecurrence 21 12.42857 7.440238   3  6   10.0 18  27
-## 2     Recurrence 16 10.06250 6.180278   4  5    8.5 14  26
+## 1   NoRecurrence 21  8.666667  4.993329   2 5.0      8 11.00  20
+## 2     Recurrence 16 13.312500 11.097860   4 7.5     11 14.25  48
 ~~~
 {: .output}
 
