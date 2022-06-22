@@ -149,5 +149,5 @@ conclusion: rejecting the null hypothesis when it is true (a type I
 error), or failing to reject the null hypothesis when it is false (a type
 II error). The probability of a type 1 error is given by the p-value; it
 is possible to calculate the probability of a type II error, but we will
-not cover that in this course.
+not cover that in this course. 
 ![RStudio layout](../fig/01-fig1.png)
