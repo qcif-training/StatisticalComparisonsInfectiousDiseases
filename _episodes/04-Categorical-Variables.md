@@ -190,11 +190,11 @@ To carry out a statistical test, we need a null and alternative hypothesis. In
 most cases, the null hypothesis H<sub>0</sub> is that the proportion of samples
 in each category is the same in both groups.
 
-Our question: Is there a relationship between obesity and gallstone recurrence?
+Our question: Is there a relationship between obesity and tuberculosis recurrence?
 
 _Hypotheses_:
-  H<sub>0</sub>: Gallstone recurrence is independent of obesity
-  H<sub>1</sub>: Gallstone recurrence is linked with obesity
+  H<sub>0</sub>: Tuberculosis recurrence is independent of obesity
+  H<sub>1</sub>: Tuberculosis recurrence is linked with obesity
 
 There are three main hypothesis tests for categorical variables:
 * *Chi-square test* `chisq.test()`: used when the _expected_ count in each cell
